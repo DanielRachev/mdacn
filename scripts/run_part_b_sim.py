@@ -9,6 +9,7 @@ from src.config import (
     T_LONG,
     T_SHORT,
     TOTAL_TIME_STEPS,
+    FIGURES_DIR
 )
 from src.data_loader import load_temporal_edgelist
 from src.plotting import plot_spreading_curve, set_report_style
@@ -43,11 +44,7 @@ def main():
 
     mean_I, std_I = sim_data.compute_mean_and_std(trajectories_data)
 
-    plot_spreading_curve(
-        mean_I,
-        std_I,
-        DATA_PROCESSED_DIR / "q8_spreading_gdata.pdf",
-        )
+    plot_spreading_curve(mean_I, std_I, FIGURES_DIR / "q8_spreading_gdata.pdf")
 
     print("Finished G_data simulation (PERSON-3).")
 
