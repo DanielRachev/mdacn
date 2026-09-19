@@ -1,24 +1,59 @@
 """Execution pipeline for SI spreading simulations on G_data and G_2 (PERSON-3 & PERSON-5)."""
 
-from src.config import G_2_PATH, G_DATA_PATH
+import numpy as np
+import pandas as pd
+
+from src.config import (
+    DATA_PROCESSED_DIR,
+    G_DATA_PATH,
+    T_LONG,
+    T_SHORT,
+    TOTAL_TIME_STEPS,
+)
 from src.data_loader import load_temporal_edgelist
+from src.plotting import plot_spreading_curve, set_report_style
 from src.simulation import TemporalSISimulator
 
 
 def main():
-    print("Running SI simulations on G_data (PERSON-3)...")
-    df_data = load_temporal_edgelist(G_DATA_PATH)
-    sim_data = TemporalSISimulator(df_data)
-    trajectories_data = sim_data.run_all_seeds()
-    # TODO (PERSON-3): Save trajectories_data to data/processed/trajectories_gdata.npz
-    # TODO (PERSON-3): Plot E[I(t)] +/- std (Q8)
+    set_report_style()
+    DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Running SI simulations on G_2 (PERSON-5)...")
-    df_g2 = load_temporal_edgelist(G_2_PATH)
-    sim_g2 = TemporalSISimulator(df_g2)
-    trajectories_g2 = sim_g2.run_all_seeds()
-    # TODO (PERSON-5): Save trajectories_g2 to data/processed/trajectories_g2.npz
-    # TODO (PERSON-5): Plot comparative spreading curves G_data vs G_2 (Q11a)
+    print("Running SI simulations on G_data (PERSON-3)...")
+
+    df_data = load_temporal_edgelist(G_DATA_PATH)
+    sim_data = TemporalSISimulator(df_data, total_time_steps=TOTAL_TIME_STEPS)
+    trajectories_data = sim_data.run_all_seeds()
+
+    np.savez_compressed(
+        DATA_PROCESSED_DIR / "trajectories_gdata.npz",
+        nodes=sim_data.nodes,
+        trajectories=trajectories_data,
+        )
+
+    influences_data = pd.DataFrame(
+        {
+            "seed": sim_data.nodes,
+            f"I_{T_SHORT}": trajectories_data[:, T_SHORT],
+            f"I_{T_LONG}": trajectories_data[:, T_LONG],
+        }
+    )
+
+    influences_data.to_csv(DATA_PROCESSED_DIR / "influence_gdata.csv", index=False)
+
+    mean_I, std_I = sim_data.compute_mean_and_std(trajectories_data)
+
+    plot_spreading_curve(
+        mean_I,
+        std_I,
+        DATA_PROCESSED_DIR / "q8_spreading_gdata.pdf",
+        )
+
+    print("Finished G_data simulation (PERSON-3).")
+
+    # TODO (PERSON-5): Load G_2 and run the same simulator.
+    # TODO (PERSON-5): Save trajectories_g2 to data/processed/trajectories_g2.npz.
+    # TODO (PERSON-5): Plot comparative spreading curves for G_data and G_2 (Q11a).
 
 
 if __name__ == "__main__":

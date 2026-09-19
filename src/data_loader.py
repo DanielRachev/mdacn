@@ -1,18 +1,22 @@
 """Data loading module for temporal contact networks."""
 
 from pathlib import Path
+
 import pandas as pd
 
 
 def load_temporal_edgelist(filepath: Path) -> pd.DataFrame:
-    """Reads a temporal network file formatted as 'a b t' (undirected contact at step t).
+    """Load a temporal network with columns (u, v, t)."""
 
-    Args:
-        filepath: Path to the raw txt file.
+    if filepath.suffix.lower() in {".xlsx", ".xls"}:
+        df = pd.read_excel(filepath)
+        df = df.iloc[:, :3]
+        df.columns = ["u", "v", "t"]
+    else:
+        df = pd.read_csv(filepath, sep=r"\s+", header=None, names=["u", "v", "t"])
 
-    Returns:
-        DataFrame with standardized columns ['u', 'v', 't'], sorted by time step t.
-    """
-    # TODO: Load whitespace/tab separated file into DataFrame
-    # Columns: ['u', 'v', 't']
-    pass
+    df = df[["u", "v", "t"]].dropna()
+    df = df.astype({"u": int, "v": int, "t": int})
+    df = df.sort_values("t").reset_index(drop=True)
+
+    return df
