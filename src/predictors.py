@@ -17,7 +17,7 @@ def extract_influence_vector(trajectories: np.ndarray, t_target: int) -> np.ndar
     Returns:
         1D array of influence values for all nodes.
     """
-    # TODO (PERSON-4): Extract column t_target from trajectories matrix
+    # TODO (Jacek): Extract column t_target from trajectories matrix
     pass
 
 
@@ -34,8 +34,8 @@ def compute_aggregated_degree_predictor(
     Returns:
         1D array of degrees aligned with node_list.
     """
-    # TODO (PERSON-4): Use aggregate_temporal_network(contacts_df, 1, t_end)
-    # TODO (PERSON-4): Extract degree for each node in node_list (0 for inactive nodes)
+    # TODO (Jacek): Use aggregate_temporal_network(contacts_df, 1, t_end)
+    # TODO (Jacek): Extract degree for each node in node_list (0 for inactive nodes)
     pass
 
 
@@ -55,5 +55,5 @@ def compute_first_contact_time_predictor(
     Returns:
         1D array of first interaction times aligned with node_list.
     """
-    # TODO (PERSON-4): Identify minimum time step t where each node appears in ['u', 'v']
+    # TODO (Jacek): Identify minimum time step t where each node appears in ['u', 'v']
     pass

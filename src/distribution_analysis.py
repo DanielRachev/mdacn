@@ -15,7 +15,7 @@ def compute_degree_distribution(G: nx.Graph) -> Tuple[np.ndarray, np.ndarray]:
     Returns:
         Tuple of (degrees, probabilities).
     """
-    # TODO (PERSON-1): Extract degree sequence and compute normalized degree frequencies
+    # TODO (Daniel): Extract degree sequence and compute normalized degree frequencies
     pass
 
 
@@ -31,9 +31,9 @@ def evaluate_small_world_property(G: nx.Graph) -> Dict[str, float]:
     Returns:
         Dictionary containing empirical and random benchmark metrics (C, C_rand, L, L_rand, sigma).
     """
-    # TODO (PERSON-2): Compute empirical C and L
-    # TODO (PERSON-2): Compute theoretical or simulated random graph baselines (C_rand, L_rand)
-    # TODO (PERSON-2): Calculate small-world ratio sigma = (C / C_rand) / (L / L_rand)
+    # TODO (Polly): Compute empirical C and L
+    # TODO (Polly): Compute theoretical or simulated random graph baselines (C_rand, L_rand)
+    # TODO (Polly): Calculate small-world ratio sigma = (C / C_rand) / (L / L_rand)
     pass
 
 
@@ -53,7 +53,7 @@ def compute_link_weight_pdf(
     Returns:
         Tuple of (bin_centers, normalized_density_values).
     """
-    # TODO (PERSON-2): Group by pairs (u, v) to count interaction occurrences
-    # TODO (PERSON-2): Select appropriate logarithmic or custom binning
-    # TODO (PERSON-2): Compute normalized PDF values dividing probability by bin width dx
+    # TODO (Polly): Group by pairs (u, v) to count interaction occurrences
+    # TODO (Polly): Select appropriate logarithmic or custom binning
+    # TODO (Polly): Compute normalized PDF values dividing probability by bin width dx
     pass

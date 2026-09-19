@@ -22,8 +22,8 @@ class TemporalSISimulator:
             contacts_df: Temporal contacts DataFrame with columns ['u', 'v', 't'].
             total_time_steps: Total duration T.
         """
-        # TODO (PERSON-3): Store total_time_steps and extract sorted unique node list
-        # TODO (PERSON-3): Group contacts by time step t into an indexed lookup table/dict
+        # TODO (Antreas): Store total_time_steps and extract sorted unique node list
+        # TODO (Antreas): Group contacts by time step t into an indexed lookup table/dict
         pass
 
     def run_single_seed(self, seed_node: int) -> np.ndarray:
@@ -35,8 +35,8 @@ class TemporalSISimulator:
         Returns:
             1D array of shape (T + 1,) containing total infected count I(t) at each step t.
         """
-        # TODO (PERSON-3): Initialize infected status boolean array
-        # TODO (PERSON-3): Step through t = 1 to T:
+        # TODO (Antreas): Initialize infected status boolean array
+        # TODO (Antreas): Step through t = 1 to T:
         #                   - Retrieve contacts at step t
         #                   - Transmit infection only from nodes infected at or before t - 1
         #                   - Record cumulative infected count I(t)
@@ -48,8 +48,8 @@ class TemporalSISimulator:
         Returns:
             2D array of shape (N, T + 1) storing infection trajectories I_i(t) for every seed.
         """
-        # TODO (PERSON-3): Loop over all N nodes as seeds
-        # TODO (PERSON-3): Populate trajectory matrix
+        # TODO (Antreas): Loop over all N nodes as seeds
+        # TODO (Antreas): Populate trajectory matrix
         pass
 
     @staticmethod
@@ -64,6 +64,6 @@ class TemporalSISimulator:
         Returns:
             Tuple of (mean_I_t, std_I_t).
         """
-        # TODO (PERSON-3): Return mean and standard deviation of of trajectories
+        # TODO (Antreas): Return mean and standard deviation of of trajectories
         pass
     

@@ -1,4 +1,4 @@
-"""Execution pipeline for Part A: Static Network Properties (PERSON-1 & PERSON-2)."""
+"""Execution pipeline for Part A: Static Network Properties (Daniel & Polly)."""
 
 from src.config import G_DATA_PATH
 from src.data_loader import load_temporal_edgelist
@@ -17,9 +17,9 @@ def main():
     for k, v in metrics.items():
         print(f"  {k}: {v}")
 
-    # TODO (PERSON-1): Plot degree distribution P(k) (Q2)
-    # TODO (PERSON-2): Run small-world analysis (Q6)
-    # TODO (PERSON-2): Compute and plot link weight PDF f_W(x) (Q7)
+    # TODO (Daniel): Plot degree distribution P(k) (Q2)
+    # TODO (Polly): Run small-world analysis (Q6)
+    # TODO (Polly): Compute and plot link weight PDF f_W(x) (Q7)
 
 
 if __name__ == "__main__":

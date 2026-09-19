@@ -20,8 +20,8 @@ def aggregate_temporal_network(
     Returns:
         Unweighted NetworkX Graph containing all nodes that contacted within the window.
     """
-    # TODO (PERSON-1): Filter contacts within [t_start, t_end]
-    # TODO (PERSON-1): Build undirected graph where edges represent at least 1 contact
+    # TODO (Daniel): Filter contacts within [t_start, t_end]
+    # TODO (Daniel): Build undirected graph where edges represent at least 1 contact
     pass
 
 
@@ -40,10 +40,10 @@ def compute_topological_metrics(G: nx.Graph) -> Dict[str, Any]:
     Returns:
         Dictionary mapping metric names to their scalar numerical values.
     """
-    # TODO (PERSON-1): Compute N = len(G)
-    # TODO (PERSON-1): Compute link density p via nx.density(G)
-    # TODO (PERSON-1): Compute sqrt(Var[D]) from degree sequence
-    # TODO (PERSON-1): Compute assortativity rho_D via nx.degree_pearson_correlation_coefficient(G)
-    # TODO (PERSON-1): Compute clustering coefficient C via nx.average_clustering(G)
-    # TODO (PERSON-1): Compute E[H] and H_max (handle disconnected components if present)
+    # TODO (Daniel): Compute N = len(G)
+    # TODO (Daniel): Compute link density p via nx.density(G)
+    # TODO (Daniel): Compute sqrt(Var[D]) from degree sequence
+    # TODO (Daniel): Compute assortativity rho_D via nx.degree_pearson_correlation_coefficient(G)
+    # TODO (Daniel): Compute clustering coefficient C via nx.average_clustering(G)
+    # TODO (Daniel): Compute E[H] and H_max (handle disconnected components if present)
     pass

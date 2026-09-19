@@ -27,13 +27,13 @@ def compute_recognition_rate(
     Returns:
         Average recognition rate r(f) in [0.0, 1.0].
     """
-    # TODO (PERSON-1): Calculate k = round(f * N)
-    # TODO (PERSON-1): Identify tie groups in both ground_truth and predictor arrays
-    # TODO (PERSON-1): Loop num_iterations times:
+    # TODO (Daniel): Calculate k = round(f * N)
+    # TODO (Daniel): Identify tie groups in both ground_truth and predictor arrays
+    # TODO (Daniel): Loop num_iterations times:
     #                   - Sample random permutations within tied rank intervals
     #                   - Extract top-k sets R_f and D_f
     #                   - Compute |R_f ∩ D_f| / k
-    # TODO (PERSON-1): Return mean overlap across iterations
+    # TODO (Daniel): Return mean overlap across iterations
     pass
 
 
@@ -45,5 +45,5 @@ def evaluate_recognition_curve(
     seed: int = 42,
 ) -> np.ndarray:
     """Evaluates the recognition rate across a list of fractions f in [0.05, 0.50]."""
-    # TODO (PERSON-1): Vectorize or iterate compute_recognition_rate across all f in fractions
+    # TODO (Daniel): Vectorize or iterate compute_recognition_rate across all f in fractions
     pass
