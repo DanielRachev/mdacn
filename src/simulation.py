@@ -61,13 +61,12 @@ class TemporalSISimulator:
             contacts = self.contacts_by_time.get(t)
 
             if contacts is not None:
-                infected_before_t = infected.copy()
                 newly_infected = set()
 
                 for u, v in contacts:
-                    if u in infected_before_t and v not in infected_before_t:
+                    if u in infected and v not in infected:
                         newly_infected.add(int(v))
-                    elif v in infected_before_t and u not in infected_before_t:
+                    elif v in infected and u not in infected:
                         newly_infected.add(int(u))
 
                 infected.update(newly_infected)

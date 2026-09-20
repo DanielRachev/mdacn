@@ -1,4 +1,4 @@
-"""Execution pipeline for SI spreading simulations on G_data and G_2 (PERSON-3 & PERSON-5)."""
+"""Execution pipeline for SI spreading simulations on G_data and G_2 (Antreas & PERSON-5)."""
 
 import numpy as np
 import pandas as pd
@@ -20,7 +20,7 @@ def main():
     set_report_style()
     DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Running SI simulations on G_data (PERSON-3)...")
+    print("Running SI simulations on G_data (Antreas)...")
 
     df_data = load_temporal_edgelist(G_DATA_PATH)
     sim_data = TemporalSISimulator(df_data, total_time_steps=TOTAL_TIME_STEPS)
@@ -46,7 +46,7 @@ def main():
 
     plot_spreading_curve(mean_I, std_I, FIGURES_DIR / "q8_spreading_gdata.pdf")
 
-    print("Finished G_data simulation (PERSON-3).")
+    print("Finished G_data simulation (Antreas).")
 
     # TODO (PERSON-5): Load G_2 and run the same simulator.
     # TODO (PERSON-5): Save trajectories_g2 to data/processed/trajectories_g2.npz.
