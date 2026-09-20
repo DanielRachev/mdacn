@@ -10,6 +10,8 @@ DATA_PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 G_DATA_PATH = DATA_RAW_DIR / "G_data.xlsx"
 G_2_PATH = DATA_RAW_DIR / "G_2.xlsx"
 
+FIGURES_DIR = PROJECT_ROOT / "figures"
+
 # Temporal Spreading Horizons
 TOTAL_TIME_STEPS = 3259  # T
 T_SHORT = 600  # t^(s)
