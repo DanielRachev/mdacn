@@ -88,7 +88,7 @@ def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: lis
         plt.plot(eval_fractions, rates, marker="o", label=label)
     plt.title("Recognition rate per f-value")
     plt.xlabel("Top fraction $f$")
-    plt.ylabel("Recognition rate $r_{R?}(f)$")
+    plt.ylabel("Recognition rate $r_{RX}(f)$")
     plt.legend()
 
     save_figure(fig, filepath)

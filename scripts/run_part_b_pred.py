@@ -13,7 +13,7 @@ from src.config import (
 )
 
 from src.plotting import set_report_style
-from src.predictors import extract_influence_vector
+from src.predictors import extract_influence_vector, compute_first_contact_time_predictor, compute_aggregated_degree_predictor
 from src.evaluation import sorted_node_indexed_value, compute_recognition_rate
 from src.plotting import plot_influence, plot_recognition_rate
 from src.static_network import aggregate_temporal_network
@@ -40,25 +40,10 @@ def main():
 
     g_data = load_temporal_edgelist(G_DATA_PATH)
 
-    temporal_network_long = aggregate_temporal_network(g_data, t_start=1, t_end=T_LONG)
-    temporal_network_short = aggregate_temporal_network(g_data, t_start=1, t_end=T_SHORT)
+    degree_long = compute_aggregated_degree_predictor(g_data, T_LONG, nodes)
+    degree_short = compute_aggregated_degree_predictor(g_data, T_SHORT, nodes)
 
-    degree_long_by_node = dict(temporal_network_long.degree())
-    degree_short_by_node = dict(temporal_network_short.degree())
-
-    degree_long = np.asarray([degree_long_by_node.get(node, 0) for node in nodes])
-    degree_short = np.asarray([degree_short_by_node.get(node, 0) for node in nodes])
-
-    contacts = pd.concat(
-        [
-            g_data[["u", "t"]].rename(columns={"u": "node"}),
-            g_data[["v", "t"]].rename(columns={"v": "node"}),
-        ],
-        ignore_index=True,
-    )
-    first_contact_by_node = contacts.groupby("node")["t"].min()
-
-    first_contact = np.asarray([first_contact_by_node.get(node, np.inf) for node in nodes])
+    first_contact = compute_first_contact_time_predictor(g_data, nodes)
 
     predictors = {
         "d^1200": degree_long,
