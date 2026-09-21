@@ -6,3 +6,6 @@ uv run python scripts/run_part_b_sim.py
 
 # Run influence prediction benchmarks
 uv run python scripts/run_part_b_pred.py
+
+# Run tests
+uv run pytest -q

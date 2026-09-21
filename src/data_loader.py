@@ -1,4 +1,4 @@
-"""Data loading module for temporal contact networks."""
+"""Data loading module for the Excel temporal contact networks."""
 
 from pathlib import Path
 
@@ -6,17 +6,28 @@ import pandas as pd
 
 
 def load_temporal_edgelist(filepath: Path) -> pd.DataFrame:
-    """Load a temporal network with columns (u, v, t)."""
+    """Read an Excel contact file and return columns ``u``, ``v``, and ``t``.
 
-    if filepath.suffix.lower() in {".xlsx", ".xls"}:
-        df = pd.read_excel(filepath)
-        df = df.iloc[:, :3]
-        df.columns = ["u", "v", "t"]
-    else:
-        df = pd.read_csv(filepath, sep=r"\s+", header=None, names=["u", "v", "t"])
+    Args:
+        filepath: Path to the raw Excel file. Input file use fixed headers: ``node1``, ``node2``, and ``timestamp``.
 
-    df = df[["u", "v", "t"]].dropna()
-    df = df.astype({"u": int, "v": int, "t": int})
-    df = df.sort_values("t").reset_index(drop=True)
+    Returns:
+        DataFrame with standardized columns ['u', 'v', 't'], sorted by time step t.
+    """
+    path = Path(filepath)
+    if not path.exists():
+        raise FileNotFoundError(path)
 
-    return df
+    data = pd.read_excel(path)
+    required_columns = {"node1", "node2", "timestamp"}
+    missing_columns = required_columns.difference(data.columns)
+    if missing_columns:
+        missing = ", ".join(sorted(missing_columns))
+        raise ValueError(f"Excel file is missing required columns: {missing}")
+
+    data = data.rename(columns={"node1": "u", "node2": "v", "timestamp": "t"})
+    if data[["u", "v", "t"]].isna().any().any():
+        raise ValueError("Excel file contains missing contact values")
+
+    data["t"] = pd.to_numeric(data["t"], errors="raise").astype(int)
+    return data[["u", "v", "t"]].sort_values("t", kind="stable").reset_index(drop=True)

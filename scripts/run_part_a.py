@@ -1,11 +1,14 @@
-"""Execution pipeline for Part A: Static Network Properties (PERSON-1 & PERSON-2)."""
+"""Execution pipeline for Part A: Static Network Properties (Daniel & Polly)."""
 
-from src.config import G_DATA_PATH
+from src.config import DATA_PROCESSED_DIR, G_DATA_PATH
 from src.data_loader import load_temporal_edgelist
+from src.distribution_analysis import plot_degree_distribution
+from src.plotting import save_figure, set_report_style
 from src.static_network import aggregate_temporal_network, compute_topological_metrics
 
 
 def main():
+    set_report_style()
     print("Loading empirical temporal network G_data...")
     df = load_temporal_edgelist(G_DATA_PATH)
 
@@ -17,9 +20,14 @@ def main():
     for k, v in metrics.items():
         print(f"  {k}: {v}")
 
-    # TODO (PERSON-1): Plot degree distribution P(k) (Q2)
-    # TODO (PERSON-2): Run small-world analysis (Q6)
-    # TODO (PERSON-2): Compute and plot link weight PDF f_W(x) (Q7)
+    print("Plotting degree distribution P(k) (Q2)...")
+    figure = plot_degree_distribution(G)
+    output_path = DATA_PROCESSED_DIR / "degree_distribution.pdf"
+    save_figure(figure, output_path)
+    print(f"  Saved: {output_path}")
+
+    # TODO (Polly): Run small-world analysis (Q6)
+    # TODO (Polly): Compute and plot link weight PDF f_W(x) (Q7)
 
 
 if __name__ == "__main__":
