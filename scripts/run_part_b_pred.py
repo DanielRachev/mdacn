@@ -31,7 +31,7 @@ def main():
     long_influence_array = sorted_node_indexed_influence(long_influence_vector, nodes)
 
     short_influence_vector = extract_influence_vector(trajectories, T_SHORT)
-    short_influence_array = sorted_node_indexed_influence(long_influence_vector, nodes)
+    short_influence_array = sorted_node_indexed_influence(short_influence_vector, nodes)
 
     plot_influence(long_influence_array, FIGURES_DIR / "q9_influence.pdf")
 
