@@ -126,12 +126,13 @@ def _sample_top_k(scores: np.ndarray, top_k: int, rng: np.random.Generator) -> s
 
     return set(selected)
 
-def sorted_node_indexed_influence(influence_vector: np.ndarray, nodes: np.ndarray) -> np.ndarray:
-    """Creates an array combining and sorting the influence and node id values
+def sorted_node_indexed_value(value_vector: np.ndarray, nodes: np.ndarray, ascending: bool = True) -> np.ndarray:
+    """Creates an array combining and sorting the given value and node id values
 
     Args:
+        ascending: ascending?
         nodes: list of node ids
-        influence_vector: vector of node influences sorted by node_id
+        value_vector: vector of node influences sorted by node_id
 
     Returns:
         1D array of tuples (node_id, influence) sorted descending by influence
@@ -141,8 +142,12 @@ def sorted_node_indexed_influence(influence_vector: np.ndarray, nodes: np.ndarra
 
     for i, node_id in enumerate(nodes):
         result[i][0] = node_id
-        result[i][1] = influence_vector[i]
+        result[i][1] = value_vector[i]
 
-    result = result[np.argsort(result[:, 1])[::-1]]
+    order = -1
+    if ascending:
+        order = 1
+
+    result = result[np.argsort(result[:, 1])[::order]]
     return result
 
