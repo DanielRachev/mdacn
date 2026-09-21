@@ -47,3 +47,24 @@ def evaluate_recognition_curve(
     """Evaluates the recognition rate across a list of fractions f in [0.05, 0.50]."""
     # TODO (PERSON-1): Vectorize or iterate compute_recognition_rate across all f in fractions
     pass
+
+def sorted_node_indexed_influence(influence_vector: np.ndarray, nodes: np.ndarray) -> np.ndarray:
+    """Creates an array combining and sorting the influence and node id values
+
+    Args:
+        nodes: list of node ids
+        influence_vector: vector of node influences sorted by node_id
+
+    Returns:
+        1D array of tuples (node_id, influence) sorted descending by influence
+    """
+    num_nodes = len(nodes)
+    result = np.ndarray((num_nodes, 2))
+
+    for i, node_id in enumerate(nodes):
+        result[i][0] = node_id
+        result[i][1] = influence_vector[i]
+
+    result = result[np.argsort(result[:, 1])[::-1]]
+    return result
+

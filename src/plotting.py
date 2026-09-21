@@ -45,3 +45,28 @@ def plot_spreading_curve(mean_I: np.ndarray, std_I: np.ndarray, filepath: Path):
     ax.legend()
 
     save_figure(fig, filepath)
+
+def plot_influence(influence_array: np.ndarray, filepath: Path) -> None:
+    """
+    Plot the sorted influence at T_LONG vs node_id
+    Args:
+        filepath: Full path to save the plot to (.pdf)
+        influence_array: 2D array (N, 2)
+    """
+
+    order = np.argsort(-influence_array[:, 1], kind="stable")
+    ranked = influence_array[order]
+
+    node_ids = ranked[:, 0].astype(int)  # Preserved node ranking R
+    influences = ranked[:, 1]
+    ranks = np.arange(1, len(ranked) + 1)
+
+    fig, ax = plt.subplots(figsize=(5.5, 3.0))
+    ax.plot(ranks, influences, label="Influence at t=1200")
+
+    ax.set_xlabel("Influence rank")
+    ax.set_ylabel("Influence")
+    ax.set_xlim(1, len(ranked))
+    ax.legend()
+
+    save_figure(fig, filepath)
