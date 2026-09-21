@@ -1,10 +1,11 @@
-"""Execution pipeline for SI spreading simulations on G_data and G_2 (Antreas & PERSON-5)."""
+"""Execution pipeline for SI spreading simulations on G_data and G_2 (Antreas & Georgi)."""
 
 import numpy as np
 import pandas as pd
 
 from src.config import (
     DATA_PROCESSED_DIR,
+    G_2_PATH,
     G_DATA_PATH,
     T_LONG,
     T_SHORT,
@@ -48,9 +49,12 @@ def main():
 
     print("Finished G_data simulation (Antreas).")
 
-    # TODO (PERSON-5): Load G_2 and run the same simulator.
-    # TODO (PERSON-5): Save trajectories_g2 to data/processed/trajectories_g2.npz.
-    # TODO (PERSON-5): Plot comparative spreading curves for G_data and G_2 (Q11a).
+    print("Running SI simulations on G_2 (Georgi)...")
+    df_g2 = load_temporal_edgelist(G_2_PATH)
+    sim_g2 = TemporalSISimulator(df_g2)
+    trajectories_g2 = sim_g2.run_all_seeds()
+    # TODO (Georgi): Save trajectories_g2 to data/processed/trajectories_g2.npz
+    # TODO (Georgi): Plot comparative spreading curves for G_data and G_2 (Q11a)
 
 
 if __name__ == "__main__":
