@@ -157,7 +157,7 @@ def evaluate_small_world_property(G: nx.Graph) -> dict[str, float]:
 
 def compute_link_weight_pdf(
     df: pd.DataFrame, t_start: int = 1, t_end: int = 3259
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Computes the probability density function f_W(x) of link weights for Q7.
 
     Link weight W is the total contact count per connected node pair over [1, T].
@@ -197,28 +197,37 @@ def compute_link_weight_pdf(
         width = max(weight_min / 2.0, 1.0)
         centers = np.array([weight_min - width / 2.0, weight_min + width / 2.0], dtype=float)
         density = np.array([1.0 / max(width, 1e-9), 1.0 / max(width, 1e-9)], dtype=float)
-        area = float(np.trapezoid(density, centers))
-        if area > 0.0:
-            density = density / area
         return centers, density
 
-    bin_edges = np.geomspace(weight_min, weight_max, num=max(20, min(60, 2 * positive_weights.size + 1)))
+    # bin_edges = np.geomspace(weight_min, weight_max, num=max(20, min(60, 2 * positive_weights.size + 1)))
+    # density, bin_edges = np.histogram(positive_weights, bins=bin_edges, density=True)
+    # centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+    # return centers, density, bin_edges
+
+    raw_edges = np.geomspace(weight_min, weight_max + 1, num=30)
+    bin_edges = np.unique(np.floor(raw_edges).astype(int))
+
+    if bin_edges[0] > weight_min:
+        bin_edges = np.insert(bin_edges, 0, weight_min)
+
+    if bin_edges[-1] <= weight_max:
+        bin_edges = np.append(bin_edges, weight_max + 1)
+
     density, bin_edges = np.histogram(positive_weights, bins=bin_edges, density=True)
-    centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-    area = float(np.trapezoid(density, centers))
-    if area > 0.0:
-        density = density / area
-    return centers, density
+    centers = np.sqrt(bin_edges[:-1] * bin_edges[1:])
+
+    return centers, density, bin_edges
 
 
 def plot_link_weight_distribution(
     df: pd.DataFrame, t_start: int = 1, t_end: int = 3259, output_path: Path | str | None = None
 ) -> plt.Figure:
     """Plot the empirical link-weight PDF for the aggregated contact network."""
-    centers, density = compute_link_weight_pdf(df, t_start=t_start, t_end=t_end)
+    centers, density, _ = compute_link_weight_pdf(df, t_start=t_start, t_end=t_end)
     figure, axis = plt.subplots()
 
     if centers.size and density.size:
+        # plot_density = np.where(density > 0, density, np.nan)
         axis.plot(centers, density, marker="o", linestyle="-", color="tab:green")
         axis.set_xscale("log")
         axis.set_yscale("log")
@@ -227,6 +236,7 @@ def plot_link_weight_distribution(
     axis.set_ylabel("Probability density $f_W(W)$")
     axis.set_title("Empirical link-weight distribution")
     axis.grid(True, which="both", alpha=0.25)
+
 
     if output_path is not None:
         output = Path(output_path)

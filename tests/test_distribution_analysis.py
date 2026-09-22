@@ -42,11 +42,13 @@ def test_link_weight_pdf_is_normalized_for_repeated_contacts():
         }
     )
 
-    centers, pdf = compute_link_weight_pdf(df)
+    centers, pdf, bin_edges = compute_link_weight_pdf(df)
 
     assert centers.size == pdf.size
     assert centers.size > 0
     assert np.all(np.isfinite(centers))
     assert np.all(np.isfinite(pdf))
     assert np.all(pdf >= 0)
-    assert np.isclose(np.trapezoid(pdf, centers), 1.0, atol=1e-2)
+
+    bin_widths = np.diff(bin_edges)
+    assert np.isclose(np.sum(pdf * bin_widths), 1.0, atol=1e-12)
