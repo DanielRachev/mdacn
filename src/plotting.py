@@ -58,17 +58,13 @@ def plot_influence(influence_array: np.ndarray, filepath: Path) -> None:
         influence_array: 2D array (N, 2)
     """
 
-    order = np.argsort(-influence_array[:, 1], kind="stable")
-    ranked = influence_array[order]
-    influences = ranked[:, 1]
-    ranks = np.arange(1, len(ranked) + 1)
-
+    influences = influence_array[:, 1]
     fig, ax = plt.subplots(figsize=(5.5, 3.0))
-    ax.plot(ranks, influences, label="Influence at t=1200")
+    ax.plot(influences, label="Influence at t=1200")
 
     ax.set_xlabel("Influence rank")
     ax.set_ylabel("Influence")
-    ax.set_xlim(1, len(ranked))
+    ax.set_xlim(1, len(influences))
     ax.legend()
 
     save_figure(fig, filepath)

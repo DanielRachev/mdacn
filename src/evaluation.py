@@ -127,7 +127,7 @@ def _sample_top_k(scores: np.ndarray, top_k: int, rng: np.random.Generator) -> s
     return set(selected)
 
 def sorted_node_indexed_value(value_vector: np.ndarray, nodes: np.ndarray, ascending: bool = True) -> np.ndarray:
-    """Creates an array combining and sorting the given value and node id values
+    """Creates an array combining and sorting the given value and node id values in the provided direction
 
     Args:
         ascending: ascending?
@@ -135,7 +135,7 @@ def sorted_node_indexed_value(value_vector: np.ndarray, nodes: np.ndarray, ascen
         value_vector: vector of node influences sorted by node_id
 
     Returns:
-        1D array of tuples (node_id, influence) sorted descending by influence
+        1D array of tuples (node_id, influence) sorted according to `ascending`
     """
     num_nodes = len(nodes)
     result = np.ndarray((num_nodes, 2))
