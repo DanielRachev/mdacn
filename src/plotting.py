@@ -1,6 +1,7 @@
 """Centralized plotting configurations and helper functions for the report."""
 
 from pathlib import Path
+from typing import Any
 
 import matplotlib
 
@@ -46,5 +47,44 @@ def plot_spreading_curve(mean_I: np.ndarray, std_I: np.ndarray, filepath: Path):
     ax.set_xlabel("Time step")
     ax.set_ylabel("Number of infected nodes")
     ax.legend()
+
+    save_figure(fig, filepath)
+
+def plot_influence(influence_array: np.ndarray, filepath: Path) -> None:
+    """
+    Plot the sorted influence at T_LONG vs node_id
+    Args:
+        filepath: Full path to save the plot to (.pdf)
+        influence_array: 2D array (N, 2)
+    """
+
+    influences = influence_array[:, 1]
+    fig, ax = plt.subplots(figsize=(5.5, 3.0))
+    ax.plot(influences, label="Influence at t=1200")
+
+    ax.set_xlabel("Influence rank")
+    ax.set_ylabel("Influence")
+    ax.set_xlim(1, len(influences))
+    ax.legend()
+
+    save_figure(fig, filepath)
+
+def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: list[float | int], filepath: Path) -> None:
+    """
+
+    Args:
+        recognition_rates: dict of labels and recognition rates
+        eval_fractions: fractions the values were computed for
+        filepath: Full path to save the plot to (.pdf)
+    """
+
+    fig, ax = plt.subplots(figsize=(5.5, 3.0))
+
+    for label, rates in recognition_rates.items():
+        plt.plot(eval_fractions, rates, marker="o", label=label)
+    plt.title("Recognition rate per f-value")
+    plt.xlabel("Top fraction $f$")
+    plt.ylabel("Recognition rate $r_{RX}(f)$")
+    plt.legend()
 
     save_figure(fig, filepath)
