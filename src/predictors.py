@@ -17,19 +17,7 @@ def extract_influence_vector(trajectories: np.ndarray, t_target: int) -> np.ndar
     Returns:
         1D array of influence values for all nodes.
     """
-
-    node_count = len(trajectories)
-    result = np.zeros(node_count)
-
-    for i in range(node_count):
-        if i > len(trajectories) or i < 0:
-            raise Exception(f"Wrong i value {i}")
-        if t_target >= len(trajectories[i]):
-            raise Exception(f"Wrong t_target: {t_target} for trajectories")
-
-        result[i] = trajectories[i][t_target]
-
-    return result
+    return trajectories[:, t_target]
 
 
 def compute_aggregated_degree_predictor(
