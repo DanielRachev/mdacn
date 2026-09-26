@@ -1,5 +1,6 @@
 """Centralized plotting configurations and helper functions for the report."""
 
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 
@@ -76,15 +77,36 @@ def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: lis
         recognition_rates: dict of labels and recognition rates
         eval_fractions: fractions the values were computed for
         filepath: Full path to save the plot to (.pdf)
+
+    Prints mean absolute vertical gaps at sampled fractions and mean slopes
+    between adjacent fractions.
     """
 
     fig, ax = plt.subplots(figsize=(5.5, 3.0))
 
     for label, rates in recognition_rates.items():
-        plt.plot(eval_fractions, rates, marker="o", label=label)
-    plt.title("Recognition rate per f-value")
-    plt.xlabel("Top fraction $f$")
-    plt.ylabel("Recognition rate $r_{RX}(f)$")
-    plt.legend()
+        ax.plot(eval_fractions, rates, marker="o", label=label)
+    ax.set_title("Recognition rate per f-value")
+    ax.set_xlabel("Top fraction $f$")
+    ax.set_ylabel("Recognition rate $r_{RX}(f)$")
+    ax.legend()
 
     save_figure(fig, filepath)
+
+    print("Recognition rate curve summary:")
+    pairwise_distances = []
+    for (first_label, first_rates), (second_label, second_rates) in combinations(
+        recognition_rates.items(), 2
+    ):
+        distance = float(
+            np.mean(np.abs(np.asarray(first_rates) - np.asarray(second_rates)))
+        )
+        pairwise_distances.append(distance)
+        print(f"  Mean absolute gap {first_label} vs {second_label}: {distance:.4f}")
+    if pairwise_distances:
+        print(f"  Mean gap across all pairs: {np.mean(pairwise_distances):.4f}")
+
+    fraction_steps = np.diff(eval_fractions)
+    for label, rates in recognition_rates.items():
+        average_derivative = np.mean(np.diff(rates) / fraction_steps)
+        print(f"  Mean derivative of {label} with respect to f: {average_derivative:.4f}")
