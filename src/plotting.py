@@ -1,5 +1,5 @@
 """Centralized plotting configurations and helper functions for the report."""
-
+import math
 from pathlib import Path
 from typing import Any
 
@@ -69,25 +69,69 @@ def plot_influence(influence_array: np.ndarray, filepath: Path) -> None:
 
     save_figure(fig, filepath)
 
-def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: list[float | int], filepath: Path) -> None:
+def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: list[float | int], filepath: Path, grid_display: bool = False) -> None:
     """
 
     Args:
         recognition_rates: dict of labels and recognition rates
         eval_fractions: fractions the values were computed for
         filepath: Full path to save the plot to (.pdf)
+        grid_display: Display the plots as a square grid (optional)
     """
 
-    fig, ax = plt.subplots(figsize=(5.5, 3.0))
+    rates_len = len(recognition_rates)
+    rates_len_isqrt = math.isqrt(rates_len)
+    if rates_len_isqrt ** 2 == rates_len and grid_display:
+        fig, ax = plt.subplots(rates_len_isqrt, rates_len_isqrt, figsize=(11.0, 6.0), sharex=True, sharey=True)
+        fig.suptitle("Recognition rate per f-value")
 
-    for label, rates in recognition_rates.items():
-        plt.plot(eval_fractions, rates, marker="o", label=label)
-    plt.title("Recognition rate per f-value")
-    plt.xlabel("Top fraction $f$")
-    plt.ylabel("Recognition rate $r_{RX}(f)$")
-    plt.legend()
+        for axis, (label, rates) in zip(ax.flat, recognition_rates.items()):
+            axis.plot(eval_fractions, rates, marker="o", label=label)
+            axis.set_title(label)
+            axis.set_xlabel("Top fraction $f$")
+            axis.set_ylabel("Recognition rate $r_{RX}(f)$")
+            axis.tick_params(labelbottom=True, labelleft=True)
+    else:
+        fig, ax = plt.subplots(figsize=(5.5, 3.0))
+
+        for label, rates in recognition_rates.items():
+            plt.plot(eval_fractions, rates, marker="o", label=label)
+        plt.title("Recognition rate per f-value")
+        plt.xlabel("Top fraction $f$")
+        plt.ylabel("Recognition rate $r_{RX}(f)$")
+        plt.legend()
 
     save_figure(fig, filepath)
+
+def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], g2_recognition_rates: dict[str, Any], display_keys: dict[str, str], eval_fractions: list[float | int], filepath: Path) -> None:
+    """
+
+    Args:
+        gdata_recognition_rates: dict of labels and recognition rates of gdata
+        g2_recognition_rates: dict of labels and recognition rates of g2
+        display_keys: displayed strings of dataset keys
+        eval_fractions: fractions the values were computed for
+        filepath: Full path to save the plot to (.pdf)
+    """
+
+    shared_keys = gdata_recognition_rates.keys() & g2_recognition_rates.keys()
+    rates_len = len(shared_keys)
+    rates_len_isqrt = math.isqrt(rates_len)
+    if rates_len_isqrt ** 2 == rates_len:
+        fig, ax = plt.subplots(rates_len_isqrt, rates_len_isqrt, figsize=(11.0, 6.0), sharex=True, sharey=True)
+        fig.suptitle("Recognition rate per f-value")
+
+        for axis, label in zip(ax.flat, shared_keys):
+            axis.plot(eval_fractions, gdata_recognition_rates[label], marker="o", label=display_keys["gdata"])
+            axis.plot(eval_fractions, g2_recognition_rates[label], marker="o", label=display_keys["g2"])
+            axis.set_title(label)
+            axis.set_xlabel("Top fraction $f$")
+            axis.set_ylabel("Recognition rate $r_{RX}(f)$")
+            axis.tick_params(labelbottom=True, labelleft=True)
+
+        h, l = ax.flat[0].get_legend_handles_labels()
+        fig.legend(h, l)
+        save_figure(fig, filepath)
 
 def plot_comparative_spreading_curves(
     mean_data: np.ndarray,
