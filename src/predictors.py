@@ -17,8 +17,7 @@ def extract_influence_vector(trajectories: np.ndarray, t_target: int) -> np.ndar
     Returns:
         1D array of influence values for all nodes.
     """
-    # TODO (Jacek): Extract column t_target from trajectories matrix
-    pass
+    return trajectories[:, t_target]
 
 
 def compute_aggregated_degree_predictor(
@@ -34,9 +33,11 @@ def compute_aggregated_degree_predictor(
     Returns:
         1D array of degrees aligned with node_list.
     """
-    # TODO (Jacek): Use aggregate_temporal_network(contacts_df, 1, t_end)
-    # TODO (Jacek): Extract degree for each node in node_list (0 for inactive nodes)
-    pass
+    temporal_network = aggregate_temporal_network(contacts_df, t_start=1, t_end=t_end)
+    degree_by_node = dict(temporal_network.degree())
+    degree_indexed = np.asarray([degree_by_node.get(node, 0) for node in node_list])
+
+    return degree_indexed
 
 
 def compute_first_contact_time_predictor(
@@ -55,5 +56,15 @@ def compute_first_contact_time_predictor(
     Returns:
         1D array of first interaction times aligned with node_list.
     """
-    # TODO (Jacek): Identify minimum time step t where each node appears in ['u', 'v']
-    pass
+    contacts = pd.concat(
+        [
+            contacts_df[["u", "t"]].rename(columns={"u": "node"}),
+            contacts_df[["v", "t"]].rename(columns={"v": "node"}),
+        ],
+        ignore_index=True,
+    )
+    first_contact_by_node = contacts.groupby("node")["t"].min()
+
+    first_contact = np.asarray([first_contact_by_node.get(node, default_time) for node in node_list])
+
+    return first_contact
