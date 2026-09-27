@@ -113,7 +113,7 @@ def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], 
         filepath: Full path to save the plot to (.pdf)
     """
 
-    shared_keys = gdata_recognition_rates.keys() & g2_recognition_rates.keys()
+    shared_keys = [label for label in gdata_recognition_rates if label in g2_recognition_rates]
     rates_len = len(shared_keys)
     rates_len_isqrt = math.isqrt(rates_len)
     if rates_len_isqrt ** 2 == rates_len:
