@@ -103,13 +103,12 @@ def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: lis
 
     save_figure(fig, filepath)
 
-def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], g2_recognition_rates: dict[str, Any], display_keys: dict[str, str], eval_fractions: list[float | int], filepath: Path) -> None:
+def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], g2_recognition_rates: dict[str, Any], eval_fractions: list[float | int], filepath: Path) -> None:
     """
 
     Args:
         gdata_recognition_rates: dict of labels and recognition rates of gdata
         g2_recognition_rates: dict of labels and recognition rates of g2
-        display_keys: displayed strings of dataset keys
         eval_fractions: fractions the values were computed for
         filepath: Full path to save the plot to (.pdf)
     """
@@ -122,8 +121,8 @@ def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], 
         fig.suptitle("Recognition rate per f-value")
 
         for axis, label in zip(ax.flat, shared_keys):
-            axis.plot(eval_fractions, gdata_recognition_rates[label], marker="o", label=display_keys["gdata"])
-            axis.plot(eval_fractions, g2_recognition_rates[label], marker="o", label=display_keys["g2"])
+            axis.plot(eval_fractions, gdata_recognition_rates[label], marker="o", label="$G_{data}$")
+            axis.plot(eval_fractions, g2_recognition_rates[label], marker="o", label="$G_2$")
             axis.set_title(label)
             axis.set_xlabel("Top fraction $f$")
             axis.set_ylabel("Recognition rate $r_{RX}(f)$")

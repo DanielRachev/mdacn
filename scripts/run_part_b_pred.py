@@ -78,7 +78,7 @@ def main():
 
         plot_recognition_rate(recognition_rates, EVAL_FRACTIONS, FIGURES_DIR / f"recognition_rates_{id}.pdf", id == "g2") # G2 check is used to separate plots, because they coincide too much
 
-    plot_recognition_rates_gdata_vs_g2(datasets_recognition_rates["gdata"], datasets_recognition_rates["g2"], { "gdata": "$G_{data}$", "g2": "$G_2$" }, EVAL_FRACTIONS, FIGURES_DIR / "q11b_recognition_rates.pdf")
+    plot_recognition_rates_gdata_vs_g2(datasets_recognition_rates["gdata"], datasets_recognition_rates["g2"], EVAL_FRACTIONS, FIGURES_DIR / "q11b_recognition_rates.pdf")
     pass
 
 
