@@ -30,7 +30,7 @@ def main():
     ]
     datasets_recognition_rates = {}
 
-    for dataset_processed, dataset_raw, id, author in datasets:
+    for dataset_processed, dataset_raw, dataset_id, author in datasets:
         print(f"Running Influence computation ({author})...")
 
         saved_data = np.load(
@@ -45,7 +45,7 @@ def main():
 
         short_influence_vector = extract_influence_vector(trajectories, T_SHORT)
 
-        plot_influence(long_influence_array, FIGURES_DIR / f"influence_{id}.pdf")
+        plot_influence(long_influence_array, FIGURES_DIR / f"influence_{dataset_id}.pdf")
 
         g = load_temporal_edgelist(dataset_raw)
 
@@ -74,9 +74,9 @@ def main():
         for label in recognition_rates:
             recognition_rates[label] = np.asarray(recognition_rates[label])
 
-        datasets_recognition_rates[id] = recognition_rates
+        datasets_recognition_rates[dataset_id] = recognition_rates
 
-        plot_recognition_rate(recognition_rates, EVAL_FRACTIONS, FIGURES_DIR / f"recognition_rates_{id}.pdf", id == "g2") # G2 check is used to separate plots, because they coincide too much
+        plot_recognition_rate(recognition_rates, EVAL_FRACTIONS, FIGURES_DIR / f"recognition_rates_{dataset_id}.pdf", dataset_id == "g2") # G2 check is used to separate plots, because they coincide too much
 
     plot_recognition_rates_gdata_vs_g2(datasets_recognition_rates["gdata"], datasets_recognition_rates["g2"], EVAL_FRACTIONS, FIGURES_DIR / "q11b_recognition_rates.pdf")
     pass

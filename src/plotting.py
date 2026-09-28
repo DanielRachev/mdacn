@@ -59,8 +59,9 @@ def plot_influence(influence_array: np.ndarray, filepath: Path) -> None:
     """
 
     influences = influence_array[:, 1]
+    ranks = np.arange(1, len(influences) + 1)
     fig, ax = plt.subplots(figsize=(5.5, 3.0))
-    ax.plot(influences, label="Influence at t=1200")
+    ax.plot(ranks, influences, label="Influence at t=1200")
 
     ax.set_xlabel("Influence rank")
     ax.set_ylabel("Influence")
@@ -79,10 +80,8 @@ def plot_recognition_rate(recognition_rates: dict[str, Any], eval_fractions: lis
         grid_display: Display the plots as a square grid (optional)
     """
 
-    rates_len = len(recognition_rates)
-    rates_len_isqrt = math.isqrt(rates_len)
-    if rates_len_isqrt ** 2 == rates_len and grid_display:
-        fig, ax = plt.subplots(rates_len_isqrt, rates_len_isqrt, figsize=(11.0, 6.0), sharex=True, sharey=True)
+    if grid_display:
+        fig, ax = plt.subplots(2, 2, figsize=(11.0, 6.0), sharex=True, sharey=True)
         fig.suptitle("Recognition rate per f-value")
 
         for axis, (label, rates) in zip(ax.flat, recognition_rates.items()):
@@ -114,23 +113,20 @@ def plot_recognition_rates_gdata_vs_g2(gdata_recognition_rates: dict[str, Any], 
     """
 
     shared_keys = [label for label in gdata_recognition_rates if label in g2_recognition_rates]
-    rates_len = len(shared_keys)
-    rates_len_isqrt = math.isqrt(rates_len)
-    if rates_len_isqrt ** 2 == rates_len:
-        fig, ax = plt.subplots(rates_len_isqrt, rates_len_isqrt, figsize=(11.0, 6.0), sharex=True, sharey=True)
-        fig.suptitle("Recognition rate per f-value")
+    fig, ax = plt.subplots(2, 2, figsize=(11.0, 6.0), sharex=True, sharey=True)
+    fig.suptitle("Recognition rate per f-value")
 
-        for axis, label in zip(ax.flat, shared_keys):
-            axis.plot(eval_fractions, gdata_recognition_rates[label], marker="o", label="$G_{data}$")
-            axis.plot(eval_fractions, g2_recognition_rates[label], marker="o", label="$G_2$")
-            axis.set_title(label)
-            axis.set_xlabel("Top fraction $f$")
-            axis.set_ylabel("Recognition rate $r_{RX}(f)$")
-            axis.tick_params(labelbottom=True, labelleft=True)
+    for axis, label in zip(ax.flat, shared_keys):
+        axis.plot(eval_fractions, gdata_recognition_rates[label], marker="o", label="$G_{data}$")
+        axis.plot(eval_fractions, g2_recognition_rates[label], marker="o", label="$G_2$")
+        axis.set_title(label)
+        axis.set_xlabel("Top fraction $f$")
+        axis.set_ylabel("Recognition rate $r_{RX}(f)$")
+        axis.tick_params(labelbottom=True, labelleft=True)
 
-        h, l = ax.flat[0].get_legend_handles_labels()
-        fig.legend(h, l)
-        save_figure(fig, filepath)
+    h, l = ax.flat[0].get_legend_handles_labels()
+    fig.legend(h, l)
+    save_figure(fig, filepath)
 
 def plot_comparative_spreading_curves(
     mean_data: np.ndarray,
