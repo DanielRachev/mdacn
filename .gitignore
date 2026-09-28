@@ -2,6 +2,4 @@
 .idea
 **/__pycache__/**
 mdacn.egg-info
-data/processed/*
-!data/processed/influence_g2.csv
-!data/processed/trajectories_g2.npz
+data/processed/

@@ -1,6 +1,6 @@
 """Execution pipeline for Part A: Static Network Properties (Daniel & Polly)."""
 
-from src.config import DATA_PROCESSED_DIR, G_DATA_PATH
+from src.config import FIGURES_DIR, G_DATA_PATH
 from src.data_loader import load_temporal_edgelist
 from src.distribution_analysis import (
     evaluate_small_world_property,
@@ -26,7 +26,7 @@ def main():
 
     print("Plotting degree distribution P(k) (Q2)...")
     figure = plot_degree_distribution(G)
-    output_path = DATA_PROCESSED_DIR / "degree_distribution.pdf"
+    output_path = FIGURES_DIR / "degree_distribution.pdf"
     save_figure(figure, output_path)
     print(f"  Saved: {output_path}")
 
@@ -37,7 +37,7 @@ def main():
 
     print("Computing and plotting link-weight PDF f_W(x) (Q7)...")
     weight_figure = plot_link_weight_distribution(df, t_start=1, t_end=3259)
-    weight_output = DATA_PROCESSED_DIR / "link_weight_pdf.pdf"
+    weight_output = FIGURES_DIR / "link_weight_pdf.pdf"
     save_figure(weight_figure, weight_output)
     print(f"  Saved: {weight_output}")
 
