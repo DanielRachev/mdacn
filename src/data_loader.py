@@ -29,5 +29,7 @@ def load_temporal_edgelist(filepath: Path) -> pd.DataFrame:
     if data[["u", "v", "t"]].isna().any().any():
         raise ValueError("Excel file contains missing contact values")
 
-    data["t"] = pd.to_numeric(data["t"], errors="raise").astype(int)
+    data[["u", "v", "t"]] = data[["u", "v", "t"]].apply(
+        lambda column: pd.to_numeric(column, errors="raise").astype("int64")
+    )
     return data[["u", "v", "t"]].sort_values("t", kind="stable").reset_index(drop=True)

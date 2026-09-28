@@ -95,19 +95,27 @@ def plot_degree_distribution(
     return figure
 
 
-def evaluate_small_world_property(G: nx.Graph) -> dict[str, float]:
-    """Quantitatively tests the small-world property using criteria from Lecture 2 (Q6).
+def evaluate_small_world_property(
+    G: nx.Graph, num_random_graphs: int = 10, seed: int = 0
+) -> dict[str, float]:
+    """Compare the empirical graph to matched Erdős-Rényi random graphs (Q6).
 
-    Compares empirical clustering C and average path length L against an equivalent
-    Erdős-Rényi random graph baseline: C_rand = <k>/N, L_rand ~ ln(N)/ln(<k>).
+    The asymptotic formula from lecture notes is not reliable for a relatively dense
+    network. To obtain a faithful baseline, we sample multiple G(n, m) graphs with
+    the same node and edge counts as the observed network and compare the empirical
+    clustering coefficient and average path length against the random-graph mean.
 
     Args:
         G: Aggregated static graph.
+        num_random_graphs: Number of random-graph realizations to sample.
+        seed: Base random seed for reproducibility.
 
     Returns:
         Dictionary containing empirical and random benchmark metrics:
         C, C_rand, L, L_rand, and sigma.
     """
+    if not isinstance(G, nx.Graph):
+        raise TypeError("G must be a NetworkX graph")
 
     node_count = G.number_of_nodes()
     edge_count = G.number_of_edges()
@@ -115,35 +123,23 @@ def evaluate_small_world_property(G: nx.Graph) -> dict[str, float]:
         return {"C": 0.0, "C_rand": 0.0, "L": 0.0, "L_rand": 0.0, "sigma": 0.0}
 
     clustering = float(nx.average_clustering(G))
+    path_length = _average_shortest_path_length(G)
 
-    if nx.is_connected(G):
-        path_length = float(nx.average_shortest_path_length(G))
-    else:
-        path_lengths: list[float] = []
-        for component_nodes in nx.connected_components(G):
-            component = G.subgraph(component_nodes)
-            if len(component) < 2:
-                continue
-            for source in component.nodes():
-                lengths = nx.shortest_path_length(component, source)
-                for target, distance in lengths.items():
-                    if source < target:
-                        path_lengths.append(float(distance))
-        path_length = float(np.mean(path_lengths)) if path_lengths else 0.0
+    rng = np.random.default_rng(seed)
+    random_clusterings: list[float] = []
+    random_path_lengths: list[float] = []
 
-    avg_degree = (2.0 * edge_count) / node_count
-    if node_count <= 1:
-        c_rand = 0.0
-        l_rand = 0.0
-    else:
-        c_rand = avg_degree / (node_count - 1)
-        if avg_degree > 2.0:
-            l_rand = float(np.log(node_count) / np.log(max(avg_degree - 1.0, 1.0)))
-        else:
-            l_rand = float("inf")
+    for _ in range(max(1, num_random_graphs)):
+        random_seed = int(rng.integers(0, 2**31 - 1))
+        random_graph = nx.gnm_random_graph(node_count, edge_count, seed=random_seed)
+        random_clusterings.append(float(nx.average_clustering(random_graph)))
+        random_path_lengths.append(_average_shortest_path_length(random_graph))
+
+    c_rand = float(np.mean(random_clusterings)) if random_clusterings else 0.0
+    l_rand = float(np.mean(random_path_lengths)) if random_path_lengths else 0.0
 
     sigma = 0.0
-    if c_rand > 0.0 and path_length > 0.0 and np.isfinite(l_rand) and l_rand > 0.0:
+    if c_rand > 0.0 and path_length > 0.0 and l_rand > 0.0:
         sigma = (clustering / c_rand) / (path_length / l_rand)
 
     return {
@@ -153,6 +149,56 @@ def evaluate_small_world_property(G: nx.Graph) -> dict[str, float]:
         "L_rand": l_rand,
         "sigma": float(sigma),
     }
+
+
+def _average_shortest_path_length(G: nx.Graph) -> float:
+    """Return the average shortest path length of the largest connected component."""
+    if G.number_of_nodes() == 0:
+        return 0.0
+
+    if nx.is_connected(G):
+        return float(nx.average_shortest_path_length(G))
+
+    components = sorted(nx.connected_components(G), key=len, reverse=True)
+    largest = components[0] if components else set()
+    if len(largest) < 2:
+        return 0.0
+
+    return float(nx.average_shortest_path_length(G.subgraph(largest)))
+
+
+def plot_small_world_comparison(
+    G: nx.Graph, output_path: Path | str | None = None, num_random_graphs: int = 10, seed: int = 0
+) -> plt.Figure:
+    """Plot empirical clustering and path length against matched random graphs."""
+    metrics = evaluate_small_world_property(G, num_random_graphs=num_random_graphs, seed=seed)
+    figure, (axis_c, axis_l) = plt.subplots(1, 2, figsize=(7.5, 3.2))
+
+    labels = ["Empirical", "Matched ER"]
+    cluster_values = [metrics["C"], metrics["C_rand"]]
+    path_values = [metrics["L"], metrics["L_rand"]]
+
+    axis_c.bar(labels, cluster_values, color=["tab:blue", "tab:orange"])
+    axis_c.set_title("Clustering")
+    axis_c.set_ylabel("$C$")
+
+    axis_l.bar(labels, path_values, color=["tab:blue", "tab:orange"])
+    axis_l.set_title("Average path length")
+    axis_l.set_ylabel("$L$")
+
+    figure.tight_layout()
+
+    if output_path is not None:
+        output = Path(output_path)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        figure.savefig(
+            output,
+            format=output.suffix.lstrip(".") or "pdf",
+            dpi=300,
+            bbox_inches="tight",
+        )
+
+    return figure
 
 
 def compute_link_weight_pdf(
