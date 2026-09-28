@@ -37,7 +37,7 @@ def main():
 
     print("Computing and plotting link-weight PDF f_W(x) (Q7)...")
     weight_figure = plot_link_weight_distribution(df, t_start=1, t_end=3259)
-    weight_output = FIGURES_DIR / "link_weight_pdf.pdf"
+    weight_output = FIGURES_DIR / "link_weight_distribution.pdf"
     save_figure(weight_figure, weight_output)
     print(f"  Saved: {weight_output}")
 

@@ -49,7 +49,7 @@ def main():
 
     mean_data, std_data = sim_data.compute_mean_and_std(trajectories_data)
 
-    plot_spreading_curve(mean_data, std_data, FIGURES_DIR / "q8_spreading_gdata.pdf")
+    plot_spreading_curve(mean_data, std_data, FIGURES_DIR / "spreading_gdata.pdf")
 
     print("Finished G_data simulation (Antreas).")
 
@@ -81,7 +81,7 @@ def main():
         std_data,
         mean_g2,
         std_g2,
-        FIGURES_DIR / "q11a_spreading_comparison.pdf",
+        FIGURES_DIR / "spreading_comparison.pdf",
     )
 
     print("Finished G_2 simulation and Q11a comparison (Georgi).")
