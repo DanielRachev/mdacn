@@ -1,5 +1,7 @@
 """Execution pipeline for Part A: Static Network Properties (Daniel & Polly)."""
 
+import numpy as np
+
 from src.config import FIGURES_DIR, G_DATA_PATH
 from src.data_loader import load_temporal_edgelist
 from src.distribution_analysis import (
@@ -23,6 +25,16 @@ def main():
     metrics = compute_topological_metrics(G)
     for k, v in metrics.items():
         print(f"  {k}: {v}")
+
+    degrees = np.fromiter((degree for _, degree in G.degree()), dtype=float)
+    er_degree_std = np.sqrt((len(G) - 1) * metrics["p"] * (1 - metrics["p"]))
+    print("Values used for degree-distribution comparison:")
+    print(f"  M: {G.number_of_edges()}")
+    print(f"  mean_degree: {degrees.mean():.12g}")
+    print(f"  max_degree: {int(degrees.max())}")
+    print(f"  ER_expected_degree_std: {er_degree_std:.12g}")
+    ratio = metrics["sqrt_var_degree"] / er_degree_std
+    print(f"  observed_to_ER_degree_std_ratio: {ratio:.12g}")
 
     print("Plotting degree distribution P(k) (Q2)...")
     figure = plot_degree_distribution(G)

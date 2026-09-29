@@ -21,6 +21,21 @@ from src.plotting import (
 from src.simulation import TemporalSISimulator
 
 
+def print_spreading_values(label, mean, std, seed_count):
+    """Print time points for one temporal network."""
+    report_times = sorted({100, 1100, T_SHORT, T_LONG, TOTAL_TIME_STEPS})
+    print(
+        f"Values for {label}: mean infected count and population "
+        "standard deviation"
+    )
+    print(f"  N seeds: {seed_count}; final time step: {mean.size - 1}")
+    for time_step in report_times:
+        print(
+            f"  t={time_step}: E[I(t)]={mean[time_step]:.6f}, "
+            f"std[I(t)]={std[time_step]:.6f}"
+        )
+
+
 def main():
     set_report_style()
     DATA_PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
@@ -48,6 +63,9 @@ def main():
     influences_data.to_csv(DATA_PROCESSED_DIR / "influence_gdata.csv", index=False)
 
     mean_data, std_data = sim_data.compute_mean_and_std(trajectories_data)
+    print_spreading_values(
+        "G_data", mean_data, std_data, len(sim_data.nodes)
+    )
 
     plot_spreading_curve(mean_data, std_data, FIGURES_DIR / "spreading_gdata.pdf")
 
@@ -76,6 +94,7 @@ def main():
     influences_g2.to_csv(DATA_PROCESSED_DIR / "influence_g2.csv", index=False)
 
     mean_g2, std_g2 = sim_g2.compute_mean_and_std(trajectories_g2)
+    print_spreading_values("G_2", mean_g2, std_g2, len(sim_g2.nodes))
     plot_comparative_spreading_curves(
         mean_data,
         std_data,
